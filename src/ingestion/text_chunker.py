@@ -1,7 +1,5 @@
 from llama_index.core.node_parser import SentenceSplitter 
-from llama_index.core import SimpleDirectoryReader
-
-documents = SimpleDirectoryReader("../../data").load_data()
+from load_doc import documents
 #spliting documnet  T2 -------------------------------------------------------------------------------------------
 #256 chunk size
 splitter_256=SentenceSplitter(chunk_size=256,chunk_overlap=30)

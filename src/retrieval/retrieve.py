@@ -1,13 +1,15 @@
 from llama_index.core import StorageContext, load_index_from_storage
 from llama_index.embeddings.huggingface import HuggingFaceEmbedding
-embed_model = HuggingFaceEmbedding(model_name="BAAI/bge-small-en-v1.5")
-
+from pathlib import Path
+embed_model = HuggingFaceEmbedding(model_name="BAAI/bge-small-en-v1.5")#مراجعه هااد الموديل 
+project_root= Path(__file__).resolve().parents[2]#بدنا نرجع لجذر المشروع، وبعدها ندخل على مجلد data
+storage_dir = project_root / "src" / "ingestion" / "storage"
 
 
 #Implement and Test Semantic Document Retrieval     T4 =============================================
-storage_context=StorageContext.from_defaults(persist_dir="../ingestion/storage")
+storage_context=StorageContext.from_defaults(persist_dir=str(storage_dir))
 index=load_index_from_storage(storage_context,embed_model=embed_model)#بدنا نرجع ال index الي حفظناه من قبل 
-print("Index loaded successfully!")
+
 
 retriever = index.as_retriever(similarity_top_k=3)
 
@@ -18,9 +20,6 @@ def retrieve_documents(question):
         print("result content=",result.text)
         print("===================================================")
     return results
-question = input("Enter your question: ")
-results = retrieve_documents(question)
-
 
 
 
