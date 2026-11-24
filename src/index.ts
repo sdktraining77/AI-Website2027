@@ -1,1 +1,0 @@
-console.log("Training Center RAG Chatbot is ready!");

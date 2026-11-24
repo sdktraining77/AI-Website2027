@@ -38,3 +38,27 @@ Success Rate = (Correct Retrievals / Total Questions) × 100
 The retrieval system successfully retrieved relevant information for all 10 test questions.
 
 The results show that the system can find relevant document chunks using semantic search.
+
+## 5. RAG Chatbot Evaluation
+
+This section evaluates the chatbot's answer generation using the retrieved context.
+
+| Test | Expected Behavior | Result |
+|---|---|---|
+| Relevant question | Generate an answer based on the documents | Passed |
+| Question about course information | Provide accurate course details | Passed |
+| Question about registration | Explain registration steps | Passed |
+| Question about course fees | Return the correct fee | Passed |
+| External question | Return an insufficient information message | Passed |
+
+**Additional Observation:**
+
+A final regression test showed that the chatbot could not answer a question requiring information about both the training center's courses and its main mission. This remains a known limitation for future improvement.
+
+### Conclusion
+
+The RAG chatbot successfully generates natural-language answers using the retrieved documents.
+
+It also provides supporting source filenames and handles questions that cannot be answered using the available information.
+
+**Note:** The 100% retrieval success rate applies only to the 10 questions included in this evaluation. Complex multi-document questions may still require further improvement.

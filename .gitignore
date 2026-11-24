@@ -1,11 +1,44 @@
-node_modules/
+# Python virtual environments
+.venv/
+venv/
+env/
+
+# Environment variables and secrets
 .env
+.env.*
+!.env.example
+
+# Python cache
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.mypy_cache/
+
+# Generated files
+*.log
+.DS_Store
+
+# Legacy Node.js dependencies
+node_modules/
 dist/
 build/
 coverage/
-*.log
-.DS_Store
+
+# IDE
 .vscode/
 
-__pycache__/
-*.py[cod]
+# Streamlit secrets
+.streamlit/secrets.toml
+
+# Jupyter
+.ipynb_checkpoints/
+
+# Legacy TypeScript implementation
+package.json
+package-lock.json
+tsconfig.json
+src/index.ts
+src/ingestion/load_doc.ts
+
+# Additional Python virtual environment
+aichatbot/

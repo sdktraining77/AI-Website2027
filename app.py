@@ -26,41 +26,42 @@ st.markdown("""
 }
 
 .main-title {
-    font-size: 36px;
+    font-size: 34px;
     font-weight: 800;
-    color: #A78BFA;
+    color: #C4B5FD;
+    margin-bottom: 5px;
 }
 
 .subtitle {
     color: #94A3B8;
-    font-size: 16px;
+    font-size: 15px;
 }
 
-.metric-card {
-    background: #151F35;
-    padding: 20px;
-    border-radius: 14px;
-    border: 1px solid #283653;
-    text-align: center;
-}
-
-.metric-value {
-    color: #A78BFA;
-    font-size: 28px;
-    font-weight: bold;
-}
-
-.metric-label {
-    color: #94A3B8;
-    font-size: 14px;
-}
-
-.answer-card {
-    background: #151F35;
+.welcome-container {
+    background: linear-gradient(135deg, #151F35, #1C2340);
     border: 1px solid #37446A;
-    padding: 22px;
-    border-radius: 14px;
-    margin-top: 15px;
+    border-radius: 18px;
+    padding: 35px;
+    text-align: center;
+    margin-top: 35px;
+    margin-bottom: 25px;
+}
+
+.welcome-icon {
+    font-size: 42px;
+    margin-bottom: 10px;
+}
+
+.welcome-title {
+    font-size: 25px;
+    font-weight: 700;
+    color: #E2E8F0;
+}
+
+.welcome-text {
+    color: #94A3B8;
+    font-size: 15px;
+    margin-top: 10px;
 }
 
 .source-card {
@@ -70,8 +71,26 @@ st.markdown("""
     border-radius: 8px;
     margin: 8px 0;
 }
+
+[data-testid="stChatMessage"] {
+    background-color: #11182B;
+    border: 1px solid #283653;
+    border-radius: 14px;
+    padding: 15px;
+}
+
+[data-testid="stChatInput"] {
+    border-color: #8B5CF6;
+}
+
+.stButton button {
+    border-radius: 10px;
+    border: 1px solid #37446A;
+}
+
 </style>
 """, unsafe_allow_html=True)
+
 
 # =========================
 # Session State
@@ -79,41 +98,45 @@ st.markdown("""
 if "messages" not in st.session_state:
     st.session_state.messages = []
 
-if "last_sources" not in st.session_state:
-    st.session_state.last_sources = []
 
 # =========================
 # Sidebar
 # =========================
 with st.sidebar:
-    st.markdown("## 🤖 AI Assistant")
-    st.caption("Training Center RAG Chatbot")
+
+    st.markdown("## 🤖 Training Center AI")
+
+    st.caption("Your intelligent training assistant")
 
     st.divider()
 
     st.markdown("### ⚙️ System Information")
+
     st.write("**Embedding Model**")
     st.caption("BAAI/bge-small-en-v1.5")
 
     st.write("**Language Model**")
-    st.caption("openai/gpt-oss-20b")
+    st.caption("openai/gpt-oss-120b")
 
-    st.write("**Retrieval Settings**")
+    st.write("**Retrieval Configuration**")
     st.caption("Top K: 3")
     st.caption("Similarity Threshold: 0.6")
 
     st.divider()
 
-    if st.button("🗑️ New Chat", use_container_width=True):
-        st.session_state.messages = []
-        st.session_state.last_sources = []
-        st.rerun()
-
     st.markdown("### 📚 Knowledge Base")
-    st.write("6 training center documents")
+    st.caption("6 training center documents")
 
     st.divider()
+
+    if st.button("🗑️ New Chat", use_container_width=True):
+        st.session_state.messages = []
+        st.rerun()
+
+    st.divider()
+
     st.caption("Powered by LlamaIndex + Groq")
+
 
 # =========================
 # Main Header
@@ -124,84 +147,72 @@ st.markdown(
 )
 
 st.markdown(
-    '<div class="subtitle">Ask questions and get answers from the training center knowledge base.</div>',
+    '<div class="subtitle">'
+    'Get accurate answers about training courses and center services.'
+    '</div>',
     unsafe_allow_html=True
 )
 
 st.write("")
 
+
 # =========================
-# Dashboard Metrics
+# Welcome Screen
 # =========================
-col1, col2, col3, col4 = st.columns(4)
+if not st.session_state.messages:
 
-with col1:
     st.markdown("""
-    <div class="metric-card">
-        <div class="metric-value">6</div>
-        <div class="metric-label">Knowledge Documents</div>
+    <div class="welcome-container">
+        <div class="welcome-icon">🤖</div>
+        <div class="welcome-title">How can I help you today?</div>
+        <div class="welcome-text">
+            Ask me about training courses, registration, schedules,
+            and everything related to the training center.
+        </div>
     </div>
     """, unsafe_allow_html=True)
 
-with col2:
-    st.markdown("""
-    <div class="metric-card">
-        <div class="metric-value">100%</div>
-        <div class="metric-label">Retrieval Test Success</div>
-    </div>
-    """, unsafe_allow_html=True)
-
-with col3:
-    st.markdown("""
-    <div class="metric-card">
-        <div class="metric-value">3</div>
-        <div class="metric-label">Top K Results</div>
-    </div>
-    """, unsafe_allow_html=True)
-
-with col4:
-    st.markdown("""
-    <div class="metric-card">
-        <div class="metric-value">0.6</div>
-        <div class="metric-label">Similarity Threshold</div>
-    </div>
-    """, unsafe_allow_html=True)
-
-st.caption(
-    "Retrieval test success is based on the 10 recorded retrieval evaluation questions, "
-    "not a guarantee of overall chatbot accuracy."
-)
-
-st.divider()
 
 # =========================
 # Chat History
 # =========================
-st.markdown("### 💬 Chat")
+st.markdown("### 💬 Conversation")
 
 for message in st.session_state.messages:
+
     with st.chat_message(message["role"]):
+
         st.markdown(message["content"])
 
-        if message["role"] == "assistant" and message.get("sources"):
+        if (
+            message["role"] == "assistant"
+            and message.get("supported", False)
+            and message.get("sources")
+        ):
+
             with st.expander("📂 View Sources"):
+
                 for source in message["sources"]:
+
                     st.markdown(
                         f"""
                         <div class="source-card">
-                            <b>📄 {source['file_name']}</b><br>
-                            Similarity Score: {source['similarity_score']:.3f}
+                            <b>📄 {source}</b>
                         </div>
                         """,
                         unsafe_allow_html=True
                     )
 
+
 # =========================
 # Chat Input
 # =========================
-question = st.chat_input("Ask something about the training center...")
+question = st.chat_input(
+    "Ask something about the training center..."
+)
 
 if question:
+
     # Display user question
     st.session_state.messages.append({
         "role": "user",
@@ -213,44 +224,51 @@ if question:
 
     # Generate answer
     with st.chat_message("assistant"):
+
         with st.spinner("Searching the knowledge base..."):
+
             try:
+
                 result = ask_question(question)
 
                 answer = result["answer"]
                 sources = result["sources"]
+                supported = result["supported"]
 
                 st.markdown(answer)
 
-                if result["supported"] and sources:
+                if supported and sources:
+
                     with st.expander("📂 View Sources"):
-                        # Display unique source files
+
                         displayed_files = set()
 
                         for source in sources:
-                            file_name = source["file_name"]
 
-                            if file_name not in displayed_files:
+                            if source not in displayed_files:
+
                                 st.markdown(
                                     f"""
                                     <div class="source-card">
-                                        <b>📄 {file_name}</b><br>
-                                        Similarity Score:
-                                        {source['similarity_score']:.3f}
+                                        <b>📄 {source}</b>
                                     </div>
                                     """,
                                     unsafe_allow_html=True
                                 )
-                                displayed_files.add(file_name)
+
+                                displayed_files.add(source)
 
                 else:
                     st.info("No supporting sources were found.")
 
+                # Save assistant response
                 st.session_state.messages.append({
                     "role": "assistant",
                     "content": answer,
-                    "sources": sources
+                    "sources": sources if supported else [],
+                    "supported": supported
                 })
 
             except Exception as e:
+
                 st.error(f"An error occurred: {e}")
